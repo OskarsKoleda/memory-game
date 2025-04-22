@@ -1,20 +1,28 @@
 .card {
-    height: 10rem;
-    /*aspect-ratio: 3/4;*/
+    display: flex;
     place-content: center;
+    width: 100px;
+    height: 139px;
     background-color: #dada65;
-    border-radius: 19px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    cursor: pointer;
-    font-size: 2rem;
-
-    transition: transform 0.2s ease-in-out;
-}
-
-.card:hover {
-    transform: scale(1.03);
+    border-radius: 13px;
+    border: 1px solid black;
 }
 
 .card img {
-    height: 100%;
+    width: 90%;
+}
+
+.disabled {
+    pointer-events: none;
+}
+
+.cardBack {
+    width: 100px;
+    padding: 1px;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+}
+
+.cardBack:hover {
+    transform: scale(1.03);
 }

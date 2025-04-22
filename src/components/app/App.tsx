@@ -1,74 +1,64 @@
-import { Card } from "../card/card.tsx";
-import styles from "./styles.module.css";
-import { useCallback, useEffect, useState } from "react";
-
-const initialBoard = [
-  [1, 2, 3, 4],
-  [5, 6, 7, 8],
-  [1, 2, 3, 4],
-  [5, 6, 7, 8],
-];
-
-interface BoardSquare {
-  symbol: number;
-  isOpened: boolean;
-  guessed: boolean;
-}
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { Board } from "../../types.ts";
+import { GameBoard } from "../gameBoard/gameBoard.tsx";
+import { generateInitialBoard } from "./utils.ts";
 
 function App() {
-  const boardWithData: BoardSquare[][] = initialBoard.map((row) =>
-    row.map((symbol) => ({ symbol, isOpened: false, guessed: false })),
-  );
+  const initialBoard = generateInitialBoard(4);
+  const [board, setBoard] = useState<Board>(initialBoard);
 
-  const [board, setBoard] = useState<BoardSquare[][]>(boardWithData);
+  const openedCards = useMemo(() => {
+    return board.flat().filter((card) => card.isOpened && !card.guessed);
+  }, [board]);
 
   const handleCardClick = useCallback(
     (row: number, col: number) => {
+      if (openedCards.length === 2) {
+        setBoard((prevBoard) => {
+          const updatedBoard = prevBoard.map((row) => [...row]);
+
+          openedCards.forEach((card) => {
+            updatedBoard[card.row][card.column].isOpened = false;
+          });
+
+          return updatedBoard;
+        });
+
+        return;
+      }
+
       setBoard((prevBoard) => {
-        const updatedBoard = prevBoard.map((row) => [...row]);
+        const updatedBoard = prevBoard.map((singleRow) => [...singleRow]);
 
         updatedBoard[row][col].isOpened = true;
 
         return updatedBoard;
       });
     },
-    [setBoard],
+    [setBoard, openedCards],
   );
 
   useEffect(() => {
-    const openedCards = board.flat().filter((card) => card.isOpened && !card.guessed);
-
     if (openedCards.length !== 2) return;
 
     if (openedCards[0].symbol === openedCards[1].symbol) {
-      openedCards.forEach((card) => {
-        card.isOpened = true;
-        card.guessed = true;
-      });
-    } else {
-      openedCards.forEach((card) => {
-        card.isOpened = false;
+      setBoard((prevBoard) => {
+        const updatedBoard = prevBoard.map((row) => [...row]);
+
+        openedCards.forEach((card) => {
+          updatedBoard[card.row][card.column].guessed = true;
+          updatedBoard[card.row][card.column].isOpened = true;
+        });
+
+        return updatedBoard;
       });
     }
-  }, [board]);
+  }, [board, openedCards, setBoard]);
 
   return (
     <div>
-      <h1>This is supposed to be a memory game</h1>
-      <div className={styles.container}>
-        <div className={styles.grid}>
-          {board.map((row, rowIndex) =>
-            row.map((card, colIndex) => (
-              <Card
-                key={colIndex}
-                symbol={card.symbol}
-                handleClick={() => handleCardClick(rowIndex, colIndex)}
-                isOpened={card.isOpened}
-              />
-            )),
-          )}
-        </div>
-      </div>
+      <h1>Memory Game</h1>
+      <GameBoard board={board} handleCardClick={handleCardClick} />
     </div>
   );
 }

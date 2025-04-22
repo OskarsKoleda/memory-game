@@ -1,12 +1,9 @@
 :root {
-    font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-    line-height: 1.5;
-    font-weight: 400;
+    font-family: Avenir, Helvetica, Arial, sans-serif;
 
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    background-color: bisque;
 }
 
 body {
@@ -15,7 +12,7 @@ body {
     margin: 0;
     min-width: 320px;
     min-height: 100vh;
-    background-color: #a7a755;
+    background-color: #c4afb6;
 }
 
 #root {
@@ -23,5 +20,5 @@ body {
     margin: 0 auto;
     padding: 2rem;
     text-align: center;
-    background-color: #cc9450;
+    background-color: #c4afb6;
 }
